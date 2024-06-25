@@ -10,7 +10,9 @@ program
 program
   .command("compress")
   .argument("<path>", "input path to look for images")
-  .option("-o, --output", "Output path")
+  .option("-o, --output <string>", "Output path")
   .action((path, options) => {
     console.log(path, options.output);
   });
+
+program.parse();
