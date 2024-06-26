@@ -3,7 +3,6 @@ const { opendir } = require("node:fs/promises");
 const fs = require("node:fs/promises");
 const sharp = require("sharp");
 const path = require("node:path");
-const chalk = require("chalk");
 
 program
   .name("img-compress")
@@ -61,6 +60,7 @@ async function getImages(dirPath, options) {
 }
 
 async function compressImage(inputFilePath, outputFilePath, extension) {
+  const chalk = await import("chalk").then((m) => m.default);
   const image = sharp(inputFilePath);
   switch (extension) {
     case ".jpeg":
@@ -89,7 +89,7 @@ async function compressImage(inputFilePath, outputFilePath, extension) {
     default:
       throw new Error(`Unsupported image format: ${extension}`);
   }
-  const inputStats = await fs.stat(inputPath);
+  const inputStats = await fs.stat(inputFilePath);
   const inputSize = inputStats.size;
   const outputStats = await fs.stat(outputFilePath);
   const outputSize = outputStats.size;
