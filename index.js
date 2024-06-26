@@ -1,7 +1,9 @@
 const { program } = require("commander");
 const { opendir } = require("node:fs/promises");
+const fs = require("node:fs/promises");
 const sharp = require("sharp");
 const path = require("node:path");
+const chalk = require("chalk");
 
 program
   .name("img-compress")
@@ -87,5 +89,20 @@ async function compressImage(inputFilePath, outputFilePath, extension) {
     default:
       throw new Error(`Unsupported image format: ${extension}`);
   }
+  const inputStats = await fs.stat(inputPath);
+  const inputSize = inputStats.size;
+  const outputStats = await fs.stat(outputFilePath);
+  const outputSize = outputStats.size;
+  const savedBytes = inputSize - outputSize;
+  const savingsPercentage = ((savedBytes / inputSize) * 100).toFixed(2);
+
   console.log(`Compressed: ${outputFilePath}`);
+  console.log(chalk.green("Image compressed successfully"));
+  console.log(chalk.yellow(`Original size: ${formatBytes(inputSize)}`));
+  console.log(chalk.yellow(`Compressed size: ${formatBytes(outputSize)}`));
+  console.log(
+    chalk.bold.green(
+      `Data saved: ${formatBytes(savedBytes)} (${savingsPercentage}%)`
+    )
+  );
 }
