@@ -13,12 +13,12 @@ program
   .command("compress")
   .argument("<path>", "input path to look for images")
   .option("-o, --output <string>", "Output path")
-  .action((path, options) => {
-    console.log(path, options.output);
+  .action((inputPath, options) => {
+    console.log(inputPath, options.output);
 
     // try to open all files in the path
     try {
-      getImages(path);
+      getImages(inputPath);
     } catch (err) {
       console.error(err);
     }
@@ -26,10 +26,26 @@ program
 
 program.parse();
 
-async function getImages(path) {
+const imageExtensions = [
+  ".jpeg",
+  ".jpg",
+  ".png",
+  ".webp",
+  ".gif",
+  ".avif",
+  ".tiff",
+];
+
+async function getImages(dirPath) {
   try {
-    const dir = await opendir(path);
-    for await (const dirent of dir) console.log(dirent.name);
+    const dir = await opendir(dirPath);
+    for await (const dirent of dir) {
+      const extension = path.extname(dirent.name).toLowerCase();
+
+      if (imageExtensions.includes(extension)) {
+        console.log(`Image found: ${dirent.name}`);
+      }
+    }
   } catch (err) {
     console.error(err);
   }
