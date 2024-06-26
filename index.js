@@ -1,4 +1,6 @@
 const { program } = require("commander");
+const { opendir } = require("node:fs/promises");
+const path = require("node:path");
 
 program
   .name("img-compress")
@@ -13,6 +15,22 @@ program
   .option("-o, --output <string>", "Output path")
   .action((path, options) => {
     console.log(path, options.output);
+
+    // try to open all files in the path
+    try {
+      getImages(path);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
 program.parse();
+
+async function getImages(path) {
+  try {
+    const dir = await opendir(path);
+    for await (const dirent of dir) console.log(dirent.name);
+  } catch (err) {
+    console.error(err);
+  }
+}
