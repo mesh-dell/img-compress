@@ -15,12 +15,12 @@ program
   .command("compress")
   .argument("<path>", "input path to look for images")
   .option("-o, --output <string>", "Output path")
-  .action((inputPath, options) => {
-    console.log(inputPath, options.output);
+  .action(async (inputPath, options) => {
+    console.log(`Input Path: ${inputPath} Output path: ${options.output}`);
 
     // try to open all files in the path
     try {
-      getImages(inputPath, options);
+      await getImages(inputPath, options);
     } catch (err) {
       console.error(err);
     }
