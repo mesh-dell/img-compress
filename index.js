@@ -54,10 +54,28 @@ async function getImages(dirPath, options) {
         await compressImage(inputFilePath, outputFilePath, extension);
       }
     }
+    const chalk = await import("chalk").then((m) => m.default);
+    averageSavingsPrecentage = (
+      (totalSavedBytes / totalInputSize) *
+      100
+    ).toFixed(2);
+    console.log(
+      chalk.bold.green(
+        `\nTotal input size: ${formatBytes(
+          totalInputSize
+        )}\nTotal Saved Bytes: ${formatBytes(
+          totalSavedBytes
+        )}\nAverage Savings Percentage: ${averageSavingsPrecentage} %`
+      )
+    );
   } catch (err) {
     console.error(err);
   }
 }
+
+let totalSavedBytes = 0;
+let totalInputSize = 0;
+let averageSavingsPrecentage = 0;
 
 async function compressImage(inputFilePath, outputFilePath, extension) {
   const chalk = await import("chalk").then((m) => m.default);
@@ -89,12 +107,16 @@ async function compressImage(inputFilePath, outputFilePath, extension) {
     default:
       throw new Error(`Unsupported image format: ${extension}`);
   }
+
   const inputStats = await fs.stat(inputFilePath);
   const inputSize = inputStats.size;
   const outputStats = await fs.stat(outputFilePath);
   const outputSize = outputStats.size;
   const savedBytes = inputSize - outputSize;
   const savingsPercentage = ((savedBytes / inputSize) * 100).toFixed(2);
+
+  totalInputSize += inputSize;
+  totalSavedBytes += savedBytes;
 
   console.log(`Compressed: ${outputFilePath}`);
   console.log(chalk.green("Image compressed successfully"));
