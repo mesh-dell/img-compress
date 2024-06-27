@@ -10,10 +10,19 @@
 
 ## Installation
 
+### Clone the Repository
+
+```bash
+git clone https://github.com/your-username/img-compress.git
+cd img-compress
+```
+
+### Install Dependencies
+
 Ensure you have Node.js installed on your machine. Then, install the required dependencies:
 
 ```bash
-npm install commander sharp chalk
+npm install
 ```
 
 ## Usage
